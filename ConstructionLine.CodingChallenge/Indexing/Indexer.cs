@@ -74,7 +74,7 @@ namespace ConstructionLine.CodingChallenge.Indexing
             searchOptions.SearchOptions.Keys.ToList().ForEach(fieldName =>
             {
                 var fieldValues = searchOptions.SearchOptions[fieldName];
-                var documentIdsFoundForField = GetDocumentIdsForField(fieldName, fieldValues);
+                var documentIdsFoundForField = GetDocumentIdsForFieldAndValues(fieldName, fieldValues);
                 
                 //we must now to an intersection with the current set of results across other fields
                 if (resultDocumentIds.Count == 0)
@@ -95,7 +95,7 @@ namespace ConstructionLine.CodingChallenge.Indexing
                 var fieldValues = searchOptions.SearchOptions[fieldName];
                 fieldValues.ForEach(fieldValue =>
                 {
-                    var documentIdsForFieldAndValue = GetDocumentIdsForField(fieldName, fieldValue);
+                    var documentIdsForFieldAndValue = GetDocumentIdsForFieldAndValue(fieldName, fieldValue);
                     var facetCount = resultDocumentIds.Intersect(documentIdsForFieldAndValue).Count();
                     facets.Add(new Facet(fieldValue, facetCount));
                 });
@@ -106,19 +106,19 @@ namespace ConstructionLine.CodingChallenge.Indexing
 
         }
 
-        private List<Guid> GetDocumentIdsForField(string fieldName, List<string> fieldValues)
+        private List<Guid> GetDocumentIdsForFieldAndValues(string fieldName, List<string> fieldValues)
         {
             var documentIdsFoundForField = new List<Guid>();
             //Go through each field value and get the total document Ids
             fieldValues.ForEach(fieldValue =>
             {
-                documentIdsFoundForField.AddRange(GetDocumentIdsForField(fieldName, fieldValue));
+                documentIdsFoundForField.AddRange(GetDocumentIdsForFieldAndValue(fieldName, fieldValue));
             });
 
             //Do a distinct (as we don't want duplicates
             return documentIdsFoundForField.Distinct().ToList();
         }
-        private List<Guid> GetDocumentIdsForField(string fieldName, string fieldValue)
+        private List<Guid> GetDocumentIdsForFieldAndValue(string fieldName, string fieldValue)
         {
             if (_invertedIndexes.ContainsKey(fieldName) && _invertedIndexes[fieldName].ContainsKey(fieldValue))
             {
