@@ -12,6 +12,23 @@ namespace ConstructionLine.CodingChallenge
 
             // TODO: data preparation and initialisation of additional data structures to improve performance goes here.
 
+
+            /*
+             * var indexer = new ShirtIndexer()
+             * foreach(var s in _shirts)
+             * {
+             *      indexer.Index(s);
+             *      
+             * }
+
+
+            var shirtIndex = new ShirtIndex()
+            shirtIndex.Add(shirt)
+
+             *
+             * 
+             */
+
         }
 
 

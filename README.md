@@ -31,3 +31,9 @@ There are two tests in the test project; one simple search for red shirts out of
 We would like you to send us a link to a git repository that we can access with your implementation.
 
 The whole exercise should not take more than an hour to implement.
+
+
+## Added by me
+
+### Packages
+* AutoFixture
