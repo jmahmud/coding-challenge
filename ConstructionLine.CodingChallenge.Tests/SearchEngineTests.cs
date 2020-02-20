@@ -31,5 +31,25 @@ namespace ConstructionLine.CodingChallenge.Tests
             AssertSizeCounts(results.Shirts, searchOptions, results.SizeCounts);
             AssertColorCounts(results.Shirts, searchOptions, results.ColorCounts);
         }
+
+        private static List<SearchOptions>  searchOptionsExamples = new List<SearchOptions>()
+        {
+            null,
+            new SearchOptions(){ Colors = null, Sizes = new List<Size>()},
+            new SearchOptions(){ Colors = new List<Color>(), Sizes = null},
+        };
+        [Test]
+        [TestCaseSource("searchOptionsExamples")]
+        public void IfArgumentsAreNull_ThrownsArgumentNullException(SearchOptions option)
+        {
+            var shirts = new List<Shirt>
+            {
+                new Shirt(Guid.NewGuid(), "Red - Small", Size.Small, Color.Red)
+            };
+            var searchEngine = new SearchEngine(shirts);
+            
+            Assert.Throws<ArgumentNullException>(() => searchEngine.Search(option));
+
+        }
     }
 }

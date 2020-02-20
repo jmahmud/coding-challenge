@@ -31,6 +31,8 @@ namespace ConstructionLine.CodingChallenge
         public SearchResults Search(SearchOptions options)
         {
             // TODO: search logic goes here.
+            if(options == null || options.Colors == null || options.Sizes == null)
+                throw new ArgumentNullException("Please ensure the SearchOptions is not null, and the the Colors and Size options are not null");
             
             // Convert SearchOptions to IndexSearchOptions
             var indexSearchOptions = ToIndexSearchOptions(options);

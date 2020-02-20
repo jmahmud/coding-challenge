@@ -33,7 +33,12 @@ We would like you to send us a link to a git repository that we can access with 
 The whole exercise should not take more than an hour to implement.
 
 
-## Added by me
+## Solution Overview
 
-### Packages
-* AutoFixture
+### Approach
+Main approach to solution is using inverted indexes (as used by search indexes) in order to do faceted searching and facet pivoting to produce the counts.
+The Indexer is the main class which performs the indexing, and uses a generic class: IndexDocument.
+
+The reason for doing the solution this way was to have a indexing solution which is independant of the objects to be indexed (i.e. the Shirt object).
+
+Main coverage of the tests cover being able to perform searches and parameters.
