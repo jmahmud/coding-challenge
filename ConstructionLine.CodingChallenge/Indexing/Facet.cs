@@ -2,8 +2,8 @@ namespace ConstructionLine.CodingChallenge.Indexing
 {
     public class Facet
     {
-        public string FacetName { get; set; }
-        public int Count { get; set; }
+        public string FacetName { get; }
+        public int Count { get; }
 
         public Facet(string facetName, int count)
         {

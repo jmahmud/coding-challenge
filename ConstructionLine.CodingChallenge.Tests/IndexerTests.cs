@@ -23,8 +23,8 @@ namespace ConstructionLine.CodingChallenge.Tests
             _fixture = new Fixture();
             _sut = new Indexer();
             _random = new Random();
-            
         }
+
         #region GetDocumentById
         [Test]
         public void GetDocumentById()
@@ -360,5 +360,7 @@ namespace ConstructionLine.CodingChallenge.Tests
         }
         
         #endregion
+        
+        
     }
 }

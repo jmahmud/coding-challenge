@@ -32,18 +32,5 @@ namespace ConstructionLine.CodingChallenge
                 White,
                 Black
             };
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as Color);
-        }
-        public bool Equals(Color obj)
-        {
-            return obj != null && obj.Id == this.Id;
-        }
     }
 }

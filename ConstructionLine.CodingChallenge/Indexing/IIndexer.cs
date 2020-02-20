@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
 
 namespace ConstructionLine.CodingChallenge.Indexing
 {

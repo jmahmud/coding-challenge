@@ -4,7 +4,7 @@ namespace ConstructionLine.CodingChallenge.Indexing
 {
     public class IndexSearchOptions
     {
-        public Dictionary<string, List<string>> SearchOptions { get; set; }
+        public Dictionary<string, List<string>> SearchOptions { get; }
 
         public IndexSearchOptions()
         {

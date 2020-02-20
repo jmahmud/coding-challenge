@@ -13,7 +13,7 @@ namespace ConstructionLine.CodingChallenge
 
         public SearchEngine(List<Shirt> shirts)
         {
-            //We shall keep a dictionary of shirts
+            //We shall keep a dictionary of shirts (so we can look up shirts by ID)
             _shirts = shirts.ToDictionary(s => s.Id, s => s);
 
             // TODO: data preparation and initialisation of additional data structures to improve performance goes here.
@@ -51,8 +51,7 @@ namespace ConstructionLine.CodingChallenge
         {
             return Color.All.Select(color =>
             {
-                var facet = resultsFacetResult.FirstOrDefault(x => x.FacetName == color.Name);
-                //var facet = resultsFacetResult.FirstOrDefault(x => x.FacetName == color.Id.ToString());
+                var facet = resultsFacetResult.FirstOrDefault(x => x.FacetName == color.Id.ToString());
                 
                 return new ColorCount()
                 {
@@ -66,8 +65,7 @@ namespace ConstructionLine.CodingChallenge
         {
             return Size.All.Select(size =>
             { 
-                var facet = resultsFacetResult.FirstOrDefault(x => x.FacetName == size.Name);
-                //var facet = resultsFacetResult.FirstOrDefault(x => x.FacetName == size.Id.ToString());
+               var facet = resultsFacetResult.FirstOrDefault(x => x.FacetName == size.Id.ToString());
                 
                 return new SizeCount()
                 {
@@ -84,10 +82,8 @@ namespace ConstructionLine.CodingChallenge
                 Id = shirt.Id,
                 Fields =
                 {
-                    /*{ nameof(shirt.Color), shirt.Color.Id.ToString() },
-                    { nameof(shirt.Size), shirt.Size.Id.ToString() }*/
-                    { nameof(shirt.Color), shirt.Color.Name },
-                    { nameof(shirt.Size), shirt.Size.Name }
+                    { nameof(shirt.Color), shirt.Color?.Id.ToString() },
+                    { nameof(shirt.Size), shirt.Size?.Id.ToString() }
                 }
             };
         }
@@ -96,12 +92,9 @@ namespace ConstructionLine.CodingChallenge
         {
             var indexSearchOptions = new IndexSearchOptions();
             
-            /*indexSearchOptions.SearchBy(MakePluralSingular(nameof(searchOptions.Colors)), searchOptions.Colors.Select(c => c.Id.ToString()).ToList());
-            indexSearchOptions.SearchBy(MakePluralSingular(nameof(searchOptions.Sizes)), searchOptions.Sizes.Select(c => c.Id.ToString()).ToList());*/
+            indexSearchOptions.SearchBy(MakePluralSingular(nameof(searchOptions.Colors)), searchOptions.Colors.Select(c => c.Id.ToString()).ToList());
+            indexSearchOptions.SearchBy(MakePluralSingular(nameof(searchOptions.Sizes)), searchOptions.Sizes.Select(c => c.Id.ToString()).ToList());
             
-            indexSearchOptions.SearchBy(MakePluralSingular(nameof(searchOptions.Colors)), searchOptions.Colors.Select(c => c.Name).ToList());
-            indexSearchOptions.SearchBy(MakePluralSingular(nameof(searchOptions.Sizes)), searchOptions.Sizes.Select(c => c.Name).ToList());
-
             return indexSearchOptions;
         }
 

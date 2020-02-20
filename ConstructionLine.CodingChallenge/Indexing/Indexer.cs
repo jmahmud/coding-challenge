@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
 using ConstructionLine.CodingChallenge.Exceptions;
 
 namespace ConstructionLine.CodingChallenge.Indexing
 {
+    /// <summary>
+    /// Class which holds in memory the documents that have been indexed and a set of inverted indexes for for fields in the document
+    /// </summary>
     public class Indexer : IIndexer
     {
         private readonly Dictionary<Guid, IndexDocument> _documents;
@@ -27,7 +27,7 @@ namespace ConstructionLine.CodingChallenge.Indexing
                 throw new IndexDocumentAlreadyExists(document.Id);
             }
             
-            //create inveted indexes for each field
+            //create inverted indexes for each field
             document.Fields.Keys.ToList().ForEach(fieldName =>
             {
                 //get or create inverted index for fieldname
@@ -35,10 +35,13 @@ namespace ConstructionLine.CodingChallenge.Indexing
                 
                 //if inverted index does not have field value, add it
                 var fieldValue = document.Fields[fieldName];
-                var documentIdListForInvertedIndex = GetOrCreateDocumentIdListForInvertedIndex(invertedIndexForField, fieldValue);
+                if (fieldValue != null)
+                {
+                    var documentIdListForInvertedIndex = GetOrCreateDocumentIdListForInvertedIndex(invertedIndexForField, fieldValue);
 
-                //add document Id for field value - storing just the ID and not the document, and performance is better with value type
-                documentIdListForInvertedIndex.Add(document.Id);
+                    //add document Id for field value - storing just the ID and not the document, and performance is better with value type
+                    documentIdListForInvertedIndex.Add(document.Id);    
+                }
             });
         }
 
@@ -87,13 +90,12 @@ namespace ConstructionLine.CodingChallenge.Indexing
                     }
                     resultDocumentIds = resultDocumentIds.Intersect(documentIdsFoundForField).ToList();    
                 }
-                
             });
 
             //Convert the result ids to the documents
             result.DocumentResults = resultDocumentIds.Select(id => _documents[id]);;
 
-            //Calculate facets
+            //Calculate facets using the search results documentIds
             _invertedIndexes.Keys.ToList().ForEach(facetFieldName =>
             {
                 var facets = new List<Facet>();
