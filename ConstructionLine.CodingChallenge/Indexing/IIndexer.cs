@@ -11,6 +11,6 @@ namespace ConstructionLine.CodingChallenge.Indexing
         void Index(IndexDocument document);
         IndexDocument GetDocument(Guid id);
 
-        Task<IndexSearchResult> Search(IndexSearchOptions searchOptions);
+        IndexSearchResult Search(IndexSearchOptions searchOptions);
     }
 }

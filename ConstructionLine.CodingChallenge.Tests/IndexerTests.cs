@@ -63,9 +63,63 @@ namespace ConstructionLine.CodingChallenge.Tests
         #endregion
         
         #region Index and Search
+
+        [Test]
+        public void Search_WhenSearchingByANonExistentField_ReturnsNoResults()
+        {
+            //Arrange
+            var document = new IndexDocument()
+            {
+                Id = Guid.NewGuid(),
+                Fields =
+                {
+                    {"Color", "Red"},
+                    {"Size", "Large"}
+                }
+            };
+            
+            var document2 = new IndexDocument()
+            {
+                Id = Guid.NewGuid(),
+                Fields =
+                {
+                    {"Color", "Red"},
+                    {"Size", "Medium"}
+                }
+            };
+            
+            var document3 = new IndexDocument()
+            {
+                Id = Guid.NewGuid(),
+                Fields =
+                {
+                    {"Color", "Blue"},
+                    {"Size", "Small"}
+                }
+            };
+            
+            _sut.Index(document);
+            _sut.Index(document2);
+            _sut.Index(document3);
+
+            var searchOptions = new IndexSearchOptions();
+            var fieldName = Guid.NewGuid().ToString();
+            searchOptions.SearchBy(fieldName, new List<string>() { "Small", "Medium"});
+            
+            //Act
+            var result = _sut.Search(searchOptions);
+            
+            //Assert
+            var documentResults = result.DocumentResults;
+            
+            Assert.IsNotNull(documentResults);
+            Assert.AreEqual(0, documentResults.Count());
+
+        }
+        
         
         [Test]
-        public async Task Search_MultipleValuesForSingleField()
+        public void Search_MultipleValuesForSingleField()
         {
             //Arrange
             var document = new IndexDocument()
@@ -106,7 +160,7 @@ namespace ConstructionLine.CodingChallenge.Tests
             searchOptions.SearchBy("Size", new List<string>() { "Small", "Medium"});
             
             //Act
-            var result = await _sut.Search(searchOptions);
+            var result = _sut.Search(searchOptions);
             
             //Assert
             var documentResults = result.DocumentResults;
@@ -119,7 +173,7 @@ namespace ConstructionLine.CodingChallenge.Tests
         }
 
         [Test]
-        public async Task Search_SingleValueForMultipleFields()
+        public void Search_SingleValueForMultipleFields()
         {
             //Arrange
             var document = new IndexDocument()
@@ -161,7 +215,7 @@ namespace ConstructionLine.CodingChallenge.Tests
             searchOptions.SearchBy("Color", new List<string>() { "Blue"});
             
             //Act
-            var result = await _sut.Search(searchOptions);
+            var result =  _sut.Search(searchOptions);
             
             //Assert
             var documentResults = result.DocumentResults;
@@ -178,7 +232,7 @@ namespace ConstructionLine.CodingChallenge.Tests
         }
 
         [Test]
-        public async Task Search_MulitpleValuesForMultipleFields()
+        public void Search_MulitpleValuesForMultipleFields()
         {
             //Arrange
             var document = new IndexDocument()
@@ -242,7 +296,7 @@ namespace ConstructionLine.CodingChallenge.Tests
             searchOptions.SearchBy("Color", new List<string>() { "Red", "Blue"});
             
             //Act
-            var result = await _sut.Search(searchOptions);
+            var result =  _sut.Search(searchOptions);
             
             //Assert
             var documentResults = result.DocumentResults;
@@ -263,7 +317,7 @@ namespace ConstructionLine.CodingChallenge.Tests
         }
 
         [Test]
-        public async Task IndexerPerformanceTest()
+        public void IndexerPerformanceTest()
         {
             var documents = Enumerable.Range(0, 50000)
                 .Select(i => new IndexDocument(){ Id = Guid.NewGuid(), Fields =
@@ -283,7 +337,7 @@ namespace ConstructionLine.CodingChallenge.Tests
             var searchOptions = new IndexSearchOptions();
             searchOptions.SearchBy("Color", new List<string>() { "Red" });
 
-            var results = await  _sut.Search(searchOptions);
+            var results =  _sut.Search(searchOptions);
             sw.Stop();
             Assert.True(sw.ElapsedMilliseconds < 100);
             Console.WriteLine($"Total Milliseconds: {sw.ElapsedMilliseconds}"); 

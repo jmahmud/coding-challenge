@@ -28,8 +28,8 @@ namespace ConstructionLine.CodingChallenge.Tests
             var results = searchEngine.Search(searchOptions);
 
             AssertResults(results.Shirts, searchOptions);
-            AssertSizeCounts(shirts, searchOptions, results.SizeCounts);
-            AssertColorCounts(shirts, searchOptions, results.ColorCounts);
+            AssertSizeCounts(results.Shirts, searchOptions, results.SizeCounts);
+            AssertColorCounts(results.Shirts, searchOptions, results.ColorCounts);
         }
     }
 }

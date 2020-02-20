@@ -65,7 +65,7 @@ namespace ConstructionLine.CodingChallenge.Indexing
             return invertedIndex;
         }
 
-        public async Task<IndexSearchResult> Search(IndexSearchOptions searchOptions)
+        public IndexSearchResult Search(IndexSearchOptions searchOptions)
         {
             var result = new IndexSearchResult();
             
@@ -74,33 +74,46 @@ namespace ConstructionLine.CodingChallenge.Indexing
             searchOptions.SearchOptions.Keys.ToList().ForEach(fieldName =>
             {
                 var fieldValues = searchOptions.SearchOptions[fieldName];
-                var documentIdsFoundForField = GetDocumentIdsForFieldAndValues(fieldName, fieldValues);
-                
-                //we must now to an intersection with the current set of results across other fields
-                if (resultDocumentIds.Count == 0)
+                //Only perform a search if there are values to search for
+                if (fieldValues.Any())
                 {
-                    //If there are no final results, we'll just add the current set
-                    resultDocumentIds.AddRange(documentIdsFoundForField);
+                    var documentIdsFoundForField = GetDocumentIdsForFieldAndValues(fieldName, fieldValues);
+                
+                    //we must now to an intersection with the current set of results across other fields
+                    if (resultDocumentIds.Count == 0)
+                    {
+                        //If there are no final results, we'll just add the current set
+                        resultDocumentIds.AddRange(documentIdsFoundForField);
+                    }
+                    resultDocumentIds = resultDocumentIds.Intersect(documentIdsFoundForField).ToList();    
                 }
-                resultDocumentIds = resultDocumentIds.Intersect(documentIdsFoundForField).ToList();
+                
             });
 
             //Convert the result ids to the documents
             result.DocumentResults = resultDocumentIds.Select(id => _documents[id]);;
 
             //Calculate facets
-            searchOptions.SearchOptions.Keys.ToList().ForEach(fieldName =>
+            _invertedIndexes.Keys.ToList().ForEach(facetFieldName =>
             {
                 var facets = new List<Facet>();
-                var fieldValues = searchOptions.SearchOptions[fieldName];
-                fieldValues.ForEach(fieldValue =>
+                var facetFieldValues = _invertedIndexes[facetFieldName].Keys.ToList();
+
+                if (facetFieldValues.Any())
                 {
-                    var documentIdsForFieldAndValue = GetDocumentIdsForFieldAndValue(fieldName, fieldValue);
-                    var facetCount = resultDocumentIds.Intersect(documentIdsForFieldAndValue).Count();
-                    facets.Add(new Facet(fieldValue, facetCount));
-                });
-                result.FacetResults.Add(fieldName, facets);
-            });    
+                    facetFieldValues.ForEach(facetFieldValue =>
+                    {
+                        var documentIdsForFieldAndValue = GetDocumentIdsForFieldAndValue(facetFieldName, facetFieldValue);
+                        if (documentIdsForFieldAndValue != null)
+                        {
+                            var facetCount = resultDocumentIds.Intersect(documentIdsForFieldAndValue).Count();
+                            facets.Add(new Facet(facetFieldValue, facetCount));                        
+                        }
+                    });
+                }
+                result.FacetResults.Add(facetFieldName, facets);    
+                
+            });
             
             return result;
 
@@ -112,7 +125,9 @@ namespace ConstructionLine.CodingChallenge.Indexing
             //Go through each field value and get the total document Ids
             fieldValues.ForEach(fieldValue =>
             {
-                documentIdsFoundForField.AddRange(GetDocumentIdsForFieldAndValue(fieldName, fieldValue));
+                var documentIdsFoundForFieldAndValue = GetDocumentIdsForFieldAndValue(fieldName, fieldValue);
+                if(documentIdsFoundForFieldAndValue != null)
+                    documentIdsFoundForField.AddRange(documentIdsFoundForFieldAndValue);
             });
 
             //Do a distinct (as we don't want duplicates
