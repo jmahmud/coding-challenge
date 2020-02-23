@@ -13,6 +13,12 @@ namespace ConstructionLine.CodingChallenge
 
         public SearchEngine(List<Shirt> shirts)
         {
+            if(shirts == null)
+                throw new ArgumentNullException("Parameters 'shirts' cannot be null");
+            
+            if(!shirts.Any())
+                throw new ArgumentException("Number of shirts must be greater than 0");
+            
             //We shall keep a dictionary of shirts (so we can look up shirts by ID)
             _shirts = shirts.ToDictionary(s => s.Id, s => s);
 

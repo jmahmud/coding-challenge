@@ -169,7 +169,18 @@ namespace ConstructionLine.CodingChallenge.Tests
             Assert.AreEqual(2, documentResults.Count());
             
             Assert.AreEqual(document2, documentResults.First(x => x.Id == document2.Id));
-            Assert.AreEqual(document3, documentResults.First(x => x.Id == document3.Id));            
+            Assert.AreEqual(document3, documentResults.First(x => x.Id == document3.Id));    
+            
+            var facetResults = result.FacetResults;
+            Assert.IsNotNull(facetResults);
+            Assert.AreEqual(1, facetResults["Size"].First(f => f.FacetName == "Small").Count);
+            Assert.AreEqual(1, facetResults["Size"].First(f => f.FacetName == "Medium").Count);
+            Assert.AreEqual(0, facetResults["Size"].First(f => f.FacetName == "Large").Count);
+            
+            Assert.AreEqual(1, facetResults["Color"].First(f => f.FacetName == "Blue").Count);
+            Assert.AreEqual(1, facetResults["Color"].First(f => f.FacetName == "Red").Count);
+            
+
         }
 
         [Test]
@@ -311,7 +322,7 @@ namespace ConstructionLine.CodingChallenge.Tests
             Assert.IsNotNull(facetResults);
             Assert.AreEqual(1, facetResults["Size"].First(f => f.FacetName == "Small").Count);
             Assert.AreEqual(2, facetResults["Size"].First(f => f.FacetName == "Medium").Count);
-            
+
             Assert.AreEqual(1, facetResults["Color"].First(f => f.FacetName == "Red").Count);
             Assert.AreEqual(2, facetResults["Color"].First(f => f.FacetName == "Blue").Count);
         }
